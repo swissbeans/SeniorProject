@@ -37,6 +37,7 @@ local function onObjectTouch( event )
 		local startX=event.x
 		local startY=event.y
 		print(startx, startY)
+		--drawPoint(startx, startY)
 	end
 
 	if (event.phase == "moved") then
@@ -50,6 +51,7 @@ local function onObjectTouch( event )
 	if ( event.phase == "ended" ) then
 		local endX=event.x
 		local endY=event.y
+		--drawPoint(endX, endY)
 		--print('Im saving')
 		--local save = display.save(drawingGroup, { filename="currentLetter.png", captureOffscreenArea=true, backgroundColor={1,0,1,0} } )
     	display.save(drawingGroup, "currentLetter.png")

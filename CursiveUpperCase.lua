@@ -24,52 +24,79 @@ local screenHeight = phoneHeight*.8
 local drawingGroup = display.newGroup();
 
 
-local startX
-local startY
-local endX
-local endY
-local innerX
-local innerY
-
 local points ={}
 
 local function drawPoint(x1,y1)
-	--print(x1,y1)
-	local point = display.newRoundedRect(drawingGroup, x1, y1, 10, 6, 2)
+	print(x1,y1)
+	local point = display.newRoundedRect(drawingGroup, x1, y1, 10, 10, 5)
 	point:setFillColor(0,0,0)   
-	--local save = display.save(drawingGroup, { filename="currentLetter.png", baseDir=system.DocumentsDirectory, captureOffscreenArea=false, backgroundColor={0,0,0,0} } )
-    table.insert(points, point)
+	table.insert(points, point)
 end
 
 local function onObjectTouch( event )
 	--print(event.phase)
 	if ( event.phase == "began" ) then
-		startX=event.x
-		startY=event.y
+		local startX=event.x
+		local startY=event.y
+		print(startx, startY)
 	end
 
 	if (event.phase == "moved") then
 		--for 
-		innerX = event.x
-		innerY = event.y
+		local innerX = event.x
+		local innerY = event.y
 		print(innerX, innerY)
 		drawPoint(innerX, innerY)
 	end
 
 	if ( event.phase == "ended" ) then
-		endX=event.x
-		endY=event.y
-		print(endX, endY)
-		drawPoint(endX,endY)
+		local endX=event.x
+		local endY=event.y
+		display.save(drawingGroup, "currentLetter.png")
+    	local path = system.pathForFile(nil, system.DocumentsDirectory)
+    	print (path)
+		--print(endX, endY)
+		--drawPoint(endX,endY)
     end
 end
 
+local lettersGroup = display.newGroup()
+
+    local options = {
+        width = 297,
+        height = 338,
+        numFrames = 5,
+        sheetContentWidth = 1485,
+        sheetContentHeight = 338
+    }
+
+
+local imageSheet = graphics.newImageSheet("pngs/LowerCaseLetters4.Png", options)
+
+  local sequenceData ={
+                       {name = "a", start = 1, count = 1},
+                       {name = "b", start = 2, count = 1},
+                       {name = "c", start = 3, count = 1},
+                       {name = "d", start = 4, count = 1},
+                       {name = "j", start = 5, count = 1}
+                       
+  }
+
+  local letterFrames = {"a","b","c","d","j"}
+
+
+  local letters = display.newSprite(lettersGroup, imageSheet, sequenceData)
+  	letters.x = display.contentWidth *.7
+  	letters.y = display.contentHeight *.525
+  	letters:scale(.8, .8)
+ 	letters:setSequence("j")
+ 	letters:play()
+
 -- create()
 local buttonMenu
-local background
 function scene:create( event )
 	local sceneGroup = self.view
-	background = display.newImageRect(sceneGroup, "pngs/background.Png", 1200, 1200)
+	local background = display.newImageRect(sceneGroup, "pngs/background.Png", 1200, 1200)
 
 
 	buttonMenu = display.newImageRect(sceneGroup, "pngs/rectButton.Png", 160, 60)
@@ -81,8 +108,27 @@ function scene:create( event )
 	menuText.y = display.contentHeight* .12
 	menuText:setFillColor(0)
 
+	local buttonSave = display.newImageRect(sceneGroup, "pngs/rectButton.Png", 160, 60)
+	buttonSave.x = display.contentWidth*.15
+	buttonSave.y = display.contentHeight*.88
+
+	local saveText = display.newText(sceneGroup, "save", 1, 1, native.systemFont, 35)
+	saveText.x = display.contentWidth*.15
+	saveText.y = display.contentHeight*.88
+	saveText:setFillColor(0)
+
+	local writingSheet = display.newImageRect(sceneGroup, "pngs/zzritingpage.Png", 297, 338)
+		writingSheet.x = display.contentWidth *.7
+		writingSheet.y = display.contentHeight* .525
+		writingSheet:scale(.8, .8)
+		
+		boundaryXmin = 187
+		boundaryYmin = 55
+		boundaryXmax = 485
+		boundaryYmax = 266
 
 	sceneGroup:insert(drawingGroup)
+	sceneGroup:insert(lettersGroup)
 	table.insert(sceneGroup,points)
 	background:addEventListener( "touch", onObjectTouch )
     
