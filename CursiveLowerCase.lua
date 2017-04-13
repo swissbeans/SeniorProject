@@ -34,10 +34,11 @@ local points ={}
 
 local function drawPoint(x1,y1)
 	--print(x1,y1)
-	local point = display.newRoundedRect(drawingGroup, x1, y1, 10, 6, 2)
-	point:setFillColor(0,0,0)   
-	--local save = display.save(drawingGroup, { filename="currentLetter.png", baseDir=system.DocumentsDirectory, captureOffscreenArea=false, backgroundColor={0,0,0,0} } )
-    table.insert(points, point)
+	if(x1 > boundaryXmin and y1 > boundaryYmin and x1 < boundaryXmax and y1 < boundaryYmax) then
+		local point = display.newRoundedRect(drawingGroup, x1, y1, 10, 10, 5)
+		point:setFillColor(0,0,0)   
+		table.insert(points, point)
+	end
 end
 
 
@@ -46,6 +47,7 @@ local function onObjectTouch( event )
 	if ( event.phase == "began" ) then
 		startX=event.x
 		startY=event.y
+		print(startX, startY)
 	end
 
 	if (event.phase == "moved") then
@@ -91,6 +93,15 @@ function scene:create( event )
 	saveText.x = display.contentWidth*.85
 	saveText.y = display.contentHeight*.12
 	saveText:setFillColor(0)
+
+	local writingSheet = display.newImageRect(sceneGroup, "pngs/zzritingpage.Png", 297, 338)
+		writingSheet.x = display.contentWidth *.7
+		writingSheet.y = display.contentHeight* .7
+		
+		boundaryXmin = 187
+		boundaryYmin = 55
+		boundaryXmax = 485
+		boundaryYmax = 266
 
 	sceneGroup:insert(drawingGroup)
 	table.insert(sceneGroup,points)

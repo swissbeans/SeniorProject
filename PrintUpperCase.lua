@@ -36,7 +36,7 @@ local function onObjectTouch( event )
 	if ( event.phase == "began" ) then
 		local startX=event.x
 		local startY=event.y
-		print(startx, startY)
+		print(startX, startY)
 		--drawPoint(startx, startY)
 	end
 
@@ -54,14 +54,16 @@ local function onObjectTouch( event )
 		--drawPoint(endX, endY)
 		--print('Im saving')
 		--local save = display.save(drawingGroup, { filename="currentLetter.png", captureOffscreenArea=true, backgroundColor={1,0,1,0} } )
-    	display.save(drawingGroup, "currentLetter.png")
+    	--display.save(drawingGroup, "currentLetter.png")
     	local path = system.pathForFile(nil, system.DocumentsDirectory)
-    	print (path)
+    	--print (path)
     	--print(system.DocumentDirectory)
     	--print('i see you')
 		--drawPoint(endX,endY)
     end
 end
+
+
 
 
 local lettersGroup = display.newGroup()
@@ -118,16 +120,23 @@ local imageSheet = graphics.newImageSheet("pngs/LowerCaseLetters.Png", options)
  	letters:play()
 
 
+local letterCount = 2
+
+local function gotoNextLetter()
+	letters:setSequence(letterFrames[letterCount])
+	letterCount = letterCount+1
+	print("Letter is at "..letterCount)
+end
+
+
 -- create()
-
-
-local buttonMenu
 function scene:create( event )
 	local sceneGroup = self.view
+
 	local background = display.newImageRect(sceneGroup, "pngs/background.Png", 1200, 1200)
 
 
-	buttonMenu = display.newImageRect(sceneGroup, "pngs/rectButton.Png", 160, 60)
+	local buttonMenu = display.newImageRect(sceneGroup, "pngs/rectButton.Png", 160, 60)
 		buttonMenu.x = display.contentWidth* .15
 		buttonMenu.y = display.contentHeight* .12
 		buttonMenu:addEventListener("tap", gotoMenu)
@@ -140,6 +149,7 @@ function scene:create( event )
 	local buttonSave = display.newImageRect(sceneGroup, "pngs/rectButton.Png", 160, 60)
 	buttonSave.x = display.contentWidth*.15
 	buttonSave.y = display.contentHeight*.88
+	buttonSave:addEventListener("tap", gotoNextLetter)
 
 	local saveText = display.newText(sceneGroup, "save", 1, 1, native.systemFont, 35)
 	saveText.x = display.contentWidth*.15
@@ -154,7 +164,6 @@ function scene:create( event )
 		boundaryYmin = 55
 		boundaryXmax = 485
 		boundaryYmax = 266
-
 
 	sceneGroup:insert(drawingGroup)
 	sceneGroup:insert(lettersGroup)
@@ -174,7 +183,7 @@ function scene:show( event )
 
 	if ( phase == "will" ) then
 		--background:addEventListener( "touch", onObjectTouch )
-		buttonMenu:addEventListener("tap", gotoMenu)
+		--buttonMenu:addEventListener("tap", gotoMenu)
 			-- Code here runs when the scene is still off screen (but is about to come on screen)
 	elseif ( phase == "did" ) then
 		-- Code here runs when the scene is entirely on screen

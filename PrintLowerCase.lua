@@ -10,22 +10,26 @@ local scene = composer.newScene()
 
 display.setStatusBar(display.HiddenStatusBar)
 local drawingGroup = display.newGroup()  -- Display group for the all the drawing stuff
-
+local boundaryXmin
+local boundaryYmin
+local boundaryXmax
+local boundaryYmax
 
 local function gotoMenu()
 	composer.removeScene( "menu" )
     composer.gotoScene( "menu", { time=800, effect="crossFade" } )
 end
 
-local lines={}
+
 local points ={}
 
 local function drawPoint(x1,y1)
 	--print(x1,y1)
-	local point = display.newRoundedRect(drawingGroup, x1, y1, 10, 6, 2)
-	point:setFillColor(0,0,0)   
-	--local save = display.save(drawingGroup, { filename="currentLetter.png", baseDir=system.DocumentsDirectory, captureOffscreenArea=false, backgroundColor={0,0,0,0} } )
-    table.insert(points, point)
+	if(x1 > boundaryXmin and y1 > boundaryYmin and x1 < boundaryXmax and y1 < boundaryYmax) then
+		local point = display.newRoundedRect(drawingGroup, x1, y1, 10, 10, 5)
+		point:setFillColor(0,0,0)   
+		table.insert(points, point)
+	end
 end
 
 
@@ -34,6 +38,7 @@ local function onObjectTouch( event )
 	if ( event.phase == "began" ) then
 		local startX=event.x
 		local startY=event.y
+		print(startX, startY)
 	end
 
 	if (event.phase == "moved") then
@@ -112,7 +117,7 @@ local imageSheet = graphics.newImageSheet("pngs/LowerCaseLetters.Png", options)
 local buttonMenu
 function scene:create( event )
 	local sceneGroup = self.view
-	local background = display.newImageRect(sceneGroup, "pngs/background.png", 1200, 1200)
+	local background = display.newImageRect(sceneGroup, "pngs/background.Png", 1200, 1200)
 
 	buttonMenu = display.newImageRect(sceneGroup, "pngs/rectButton.Png", 160, 60)
 		buttonMenu.x = display.contentWidth* .15
@@ -120,16 +125,25 @@ function scene:create( event )
 		buttonMenu:addEventListener("tap", gotoMenu)
 
     local menuText = display.newText(sceneGroup, "MENU", 1, 1, native.systemFont, 35 )
-	menuText.x = display.contentWidth * .15
-	menuText.y = display.contentHeight* .12
-	menuText:setFillColor(0)
+		menuText.x = display.contentWidth * .15
+		menuText.y = display.contentHeight* .12
+		menuText:setFillColor(0)
+
+	local writingSheet = display.newImageRect(sceneGroup, "pngs/zzritingpage.Png", 297, 338)
+		writingSheet.x = display.contentWidth *.7
+		writingSheet.y = display.contentHeight* .7
+		
+		boundaryXmin = 187
+		boundaryYmin = 55
+		boundaryXmax = 485
+		boundaryYmax = 266
 
     sceneGroup:insert(drawingGroup)
 	sceneGroup:insert(lettersGroup)
-	table.insert(sceneGroup,lines)
 	table.insert(sceneGroup,points)
 	background:addEventListener( "touch", onObjectTouch )
 	
+
 
 end
 

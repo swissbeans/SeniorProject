@@ -27,10 +27,12 @@ local drawingGroup = display.newGroup();
 local points ={}
 
 local function drawPoint(x1,y1)
-	print(x1,y1)
-	local point = display.newRoundedRect(drawingGroup, x1, y1, 10, 10, 5)
-	point:setFillColor(0,0,0)   
-	table.insert(points, point)
+	--print(x1,y1)
+	if(x1 > boundaryXmin and y1 > boundaryYmin and x1 < boundaryXmax and y1 < boundaryYmax) then
+		local point = display.newRoundedRect(drawingGroup, x1, y1, 10, 10, 5)
+		point:setFillColor(0,0,0)   
+		table.insert(points, point)
+	end
 end
 
 local function onObjectTouch( event )
@@ -38,7 +40,7 @@ local function onObjectTouch( event )
 	if ( event.phase == "began" ) then
 		local startX=event.x
 		local startY=event.y
-		print(startx, startY)
+		print(startX, startY)
 	end
 
 	if (event.phase == "moved") then
@@ -52,9 +54,9 @@ local function onObjectTouch( event )
 	if ( event.phase == "ended" ) then
 		local endX=event.x
 		local endY=event.y
-		display.save(drawingGroup, "currentLetter.png")
-    	local path = system.pathForFile(nil, system.DocumentsDirectory)
-    	print (path)
+		--display.save(drawingGroup, "currentLetter.png")
+    	--local path = system.pathForFile(nil, system.DocumentsDirectory)
+    	--print (path)
 		--print(endX, endY)
 		--drawPoint(endX,endY)
     end
@@ -122,10 +124,10 @@ function scene:create( event )
 		writingSheet.y = display.contentHeight* .525
 		writingSheet:scale(.8, .8)
 		
-		boundaryXmin = 187
-		boundaryYmin = 55
-		boundaryXmax = 485
-		boundaryYmax = 266
+		boundaryXmin = 215
+		boundaryYmin = 35
+		boundaryXmax = 455
+		boundaryYmax = 300
 
 	sceneGroup:insert(drawingGroup)
 	sceneGroup:insert(lettersGroup)
