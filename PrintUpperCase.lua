@@ -8,6 +8,7 @@ local scene = composer.newScene()
 
 --Global initial variables
 display.setStatusBar(display.HiddenStatusBar)
+
 local drawingGroup = display.newGroup()  -- Display group for the all the drawing stuff
 local boundaryXmin
 local boundaryYmin
@@ -124,9 +125,13 @@ local letterCount = 2
 
 local function gotoNextLetter()
 	letters:setSequence(letterFrames[letterCount])
+	display.remove(drawingGroup)
+	drawingGroup = display.newGroup()
+	--print("eep"..drawingGroup)
 	letterCount = letterCount+1
 	print("Letter is at "..letterCount)
 end
+
 
 
 -- create()

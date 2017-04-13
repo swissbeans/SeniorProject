@@ -40,14 +40,25 @@ local function onObjectTouch( event )
 	if ( event.phase == "began" ) then
 		local startX=event.x
 		local startY=event.y
+		system.pathForFile("array.txt", system.DocumentsDirectory)
+		local file, errorString = io.open(path, "w")
+		if not file then
+			print("file error: " .. errorString)
+		else
+			file:write(startX, startY)
+			io.close(file)
+			print(system.DocumentsDirectory)
+		end
 		print(startX, startY)
+
+		drawPoint(startX, startY)
 	end
 
 	if (event.phase == "moved") then
 		--for 
 		local innerX = event.x
 		local innerY = event.y
-		print(innerX, innerY)
+		--print(innerX, innerY)
 		drawPoint(innerX, innerY)
 	end
 
