@@ -54,10 +54,19 @@ local function arrayToFile()
 	end
 end
 
+local path = system.pathForFile("array.txt", system.DocumentsDirectory)
 local function onObjectTouch( event )
 	if ( event.phase == "began" ) then
 		local startX=event.x
 		local startY=event.y
+
+		local path = system.pathForFile("array.txt", system.DocumentsDirectory)
+		local file, errorString = io.open(path, "w")
+		if not file then
+			print("file error: " .. errorString)
+		else
+		file:write("")
+		end
 		--print(startX, startY)
 		drawPoint(startX, startY)
 	end
@@ -66,19 +75,20 @@ local function onObjectTouch( event )
 		local innerX = event.x
 		local innerY = event.y
 		
-		--local path = system.pathForFile("array.txt", system.DocumentsDirectory)
-		--local file, errorString = io.open(path, "w")
-		--if not file then
-		--	print("file error: " .. errorString)
-		--else
-			
-		--	file:write(innerX, innerY)
-		--	io.close(file)
+		local path = system.pathForFile("array.txt", system.DocumentsDirectory)
+		local file, errorString = io.open(path, "a")
+		if not file then
+			print("file error: " .. errorString)
+		else
+			print(innerX, innerY)
+			drawPoint(innerX, innerY)	
+			file:write(innerX, " ", innerY, " ")
+			io.close(file)
+			--print(path)
 			--print(system.DocumentsDirectory)
-		--end
+		end
 		
-		--print(innerX, innerY)
-		drawPoint(innerX, innerY)
+		
 	end
 
 	if ( event.phase == "ended" ) then
@@ -106,7 +116,7 @@ local numFrames = 5
 local imageSheet = graphics.newImageSheet("pngs/LowerCaseLetters4.Png", options)
 
   local sequenceData ={
-                       {name = "a", start = 1, count = 0},
+                       {name = "a", start = 1, count = 1},
                        {name = "b", start = 2, count = 1},
                        {name = "c", start = 3, count = 1},
                        {name = "d", start = 4, count = 1},
@@ -123,38 +133,40 @@ local imageSheet = graphics.newImageSheet("pngs/LowerCaseLetters4.Png", options)
  	letters:setSequence("a")
  	letters:play()
 
-local letterCount = 2
+local letterCount = 1
+
 
 
 local function gotoNextLetter()
 	checkAccuracy()
+	letterCount = letterCount + 1
 	if (letterCount > numFrames) then
 		display.remove(drawingGroup)
 		letterCount=1
-		letters:setSequence(letterFrames[letterCount+1])
+		letters:setSequence(letterFrames[letterCount])
 	end	
 
 	letters:setSequence(letterFrames[letterCount])
 	display.remove(drawingGroup)
 	drawingGroup = display.newGroup()
-	letterCount = letterCount+1
+	--letterCount = letterCount +1
 	print("Letter is at "..letterCount)
 end
 
 local function gotoPreviousLetter()
+	letterCount = letterCount-1
 	if (letterCount < 1) then
 		display.remove(drawingGroup)
-		letters:setSequence(letterFrames[letterCount+numFrames])
+		letterCount = numFrames
+		letters:setSequence(letterFrames[letterCount])
+
 	end	
 
-	for i=numFrames, 1, -1 do
-		letters:setSequence(letterFrames[letterCount])
-	end
-
+	letters:setSequence(letterFrames[letterCount])
 	display.remove(drawingGroup)
 	drawingGroup = display.newGroup()
 	
-	letterCount = letterCount-1
+	
 	print("shit is at "..letterCount)
 end
 
