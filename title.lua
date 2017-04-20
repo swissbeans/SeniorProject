@@ -9,7 +9,7 @@ local scene = composer.newScene()
 
 local function gotoMenu()
 	composer.removeScene('menu')
-	composer.gotoScene('menu', { time=800, effect="slideUp" })
+	composer.gotoScene('menu', { time=3000, effect="slideUp" })
 end
 
 local r=.2

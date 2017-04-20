@@ -3,8 +3,8 @@
 	Handwriting Helper - Cursive Upper Case Scene
 
 
-	problems:   what's happening mathematically forward and back buttons
-				need to figure out how to take x and y points and put them into table/array (or onto external file)
+	problems:  need to get letter coordinates into new file checker, to check accuracy of each letter
+				
 
 ]]
 
@@ -15,19 +15,14 @@ local scene = composer.newScene()
 --Global initial variables
 
 display.setStatusBar(display.HiddenStatusBar)
-
-local function gotoMenu()
-	composer.removeScene( "menu" )
-    composer.gotoScene( "menu", { time=800, effect="crossFade" } )
-end
-
-
-local phoneWidth = 480
-local phoneHeight = 320
-local screenWidth = phoneWidth*.8
-local screenHeight = phoneHeight*.8
 local drawingGroup = display.newGroup();
 
+local function gotoMenu()
+	display.remove(drawingGroup)
+	drawingGroup = display.newGroup()
+	composer.removeScene( "menu" )
+    composer.gotoScene( "menu", { time=2000, effect="crossFade" } )
+end
 
 local points = {}
 
@@ -36,66 +31,56 @@ local function drawPoint(x1,y1)
 		local point = display.newRoundedRect(drawingGroup, x1, y1, 10, 10, 5)
 		point:setFillColor(0,0,0)   
 		table.insert(points, point)
-		--print (points)
 	end
 end
 
-local function checkAccuracy()
+--local function checkAccuracy()
 	--if array 1 == array 2 then
 
-	local percentage = display.newText(drawingGroup, "Correct!", 1, 1, native.systemFont, 35 )
-	percentage.x = display.contentWidth*.20
-	percentage.y = display.contentHeight* .5
-end
+--	local percentage = display.newText(drawingGroup, "Correct!", 1, 1, "comic.ttf", 35 )
+--	percentage.x = display.contentWidth*.20
+--	percentage.y = display.contentHeight* .5
+--end
 
-
-local function arrayToFile()
-	for i = 1, table.getn(points), 1 do
-	end
-end
-
-local path = system.pathForFile("array.txt", system.DocumentsDirectory)
+--local path = system.pathForFile("array.txt", system.DocumentsDirectory)
 local function onObjectTouch( event )
 	if ( event.phase == "began" ) then
 		local startX=event.x
 		local startY=event.y
-
+		drawPoint(startX, startY)
+		print(startX, startY)
+		--writing " " to file array.txt
 		local path = system.pathForFile("array.txt", system.DocumentsDirectory)
 		local file, errorString = io.open(path, "w")
 		if not file then
-			print("file error: " .. errorString)
+			print("file error!!!!: " .. errorString)
 		else
-		file:write("")
+		file:write(" ")
 		end
-		--print(startX, startY)
-		drawPoint(startX, startY)
+		io.close(file)
+	
 	end
 
 	if (event.phase == "moved") then 
 		local innerX = event.x
 		local innerY = event.y
-		
+		drawPoint(innerX, innerY)	
+		print(innerX, innerY)
 		local path = system.pathForFile("array.txt", system.DocumentsDirectory)
 		local file, errorString = io.open(path, "a")
 		if not file then
 			print("file error: " .. errorString)
-		else
-			print(innerX, innerY)
-			drawPoint(innerX, innerY)	
+		else			
 			file:write(innerX, " ", innerY, " ")
 			io.close(file)
-			--print(path)
-			--print(system.DocumentsDirectory)
 		end
-		
-		
 	end
 
 	if ( event.phase == "ended" ) then
 		local endX=event.x
 		local endY=event.y
-		--display.save(drawingGroup, "currentLetter.png")
-    	--local path = system.pathForFile(nil, system.DocumentsDirectory)
+		display.save(drawingGroup, "currentLetter.png")
+    	local path = system.pathForFile(nil, system.DocumentsDirectory)
     	--print (path)
 		--print(endX, endY)
 		--drawPoint(endX,endY)
@@ -138,12 +123,11 @@ local letterCount = 1
 
 
 local function gotoNextLetter()
-	checkAccuracy()
+	--checkAccuracy()
 	letterCount = letterCount + 1
 	if (letterCount > numFrames) then
-		display.remove(drawingGroup)
 		letterCount=1
-		letters:setSequence(letterFrames[letterCount])
+		--letters:setSequence(letterFrames[letterCount])
 	end	
 
 	letters:setSequence(letterFrames[letterCount])
@@ -156,18 +140,17 @@ end
 local function gotoPreviousLetter()
 	letterCount = letterCount-1
 	if (letterCount < 1) then
-		display.remove(drawingGroup)
+		--display.remove(drawingGroup)
 		letterCount = numFrames
-		letters:setSequence(letterFrames[letterCount])
-
+		--letters:setSequence(letterFrames[letterCount])
+		--display.remove(drawingGroup)
+		--drawingGroup = display.newGroup()
 	end	
 
 	letters:setSequence(letterFrames[letterCount])
 	display.remove(drawingGroup)
 	drawingGroup = display.newGroup()
-	
-	
-	print("shit is at "..letterCount)
+	print("Letter is at "..letterCount)
 end
 
 -- create()
@@ -181,7 +164,7 @@ function scene:create( event )
 		buttonMenu.x = display.contentWidth* .10
 		buttonMenu.y = display.contentHeight* .12
 
-    local menuText = display.newText(sceneGroup, "MENU", 1, 1, native.systemFont, 35 )
+    local menuText = display.newText(sceneGroup, "MENU", 1, 1, "comic.ttf", 35 )
 	menuText.x = display.contentWidth * .10
 	menuText.y = display.contentHeight* .12
 	menuText:setFillColor(0)
@@ -191,7 +174,7 @@ function scene:create( event )
 	buttonCheck.y = display.contentHeight*.88
 	--buttonCheck:addEventListener("tap", gotoNextLetter)
 
-	local checkText = display.newText(sceneGroup, "check", 1, 1, native.systemFont, 35)
+	local checkText = display.newText(sceneGroup, "check", 1, 1, "comic.ttf", 35)
 	checkText.x = display.contentWidth*.10
 	checkText.y = display.contentHeight*.88
 	checkText:setFillColor(0)
@@ -201,7 +184,7 @@ function scene:create( event )
 	buttonNext.y = display.contentHeight*.88
 	buttonNext:addEventListener("tap", gotoNextLetter)
 
-	local nextText = display.newText(sceneGroup, ">", 1, 1, native.systemFont, 35)
+	local nextText = display.newText(sceneGroup, ">", 1, 1, "comic.ttf", 35)
 	nextText.x = display.contentWidth*.95
 	nextText.y = display.contentHeight*.88
 	nextText:setFillColor(0)
@@ -211,7 +194,7 @@ function scene:create( event )
 	buttonBack.y = display.contentHeight*.88
 	buttonBack:addEventListener("tap", gotoPreviousLetter)
 
-	local backText = display.newText(sceneGroup, "<", 1, 1, native.systemFont, 35)
+	local backText = display.newText(sceneGroup, "<", 1, 1, "comic.ttf", 35)
 	backText.x = display.contentWidth*.45
 	backText.y = display.contentHeight*.88
 	backText:setFillColor(0)
@@ -220,11 +203,11 @@ function scene:create( event )
 	local writingSheet = display.newImageRect(sceneGroup, "pngs/zzritingpage.Png", 297, 338)
 		writingSheet.x = display.contentWidth *.7
 		writingSheet.y = display.contentHeight* .525
-		writingSheet:scale(.8, .8)
+		writingSheet:scale(.6, .8)
 		
-		boundaryXmin = 215
+		boundaryXmin = 250
 		boundaryYmin = 35
-		boundaryXmax = 455
+		boundaryXmax = 425
 		boundaryYmax = 300
 
 	sceneGroup:insert(drawingGroup)

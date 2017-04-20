@@ -27,14 +27,14 @@ function scene:create( event )
 		buttonMenu.x = display.contentWidth* .15
 		buttonMenu.y = display.contentHeight* .12
 
-    local menuText = display.newText(sceneGroup, "MENU", 1, 1, native.systemFont, 35 )
+    local menuText = display.newText(sceneGroup, "MENU", 1, 1, "comic.ttf", 35 )
 	menuText.x = display.contentWidth * .15
 	menuText.y = display.contentHeight* .12
 	menuText:setFillColor(0)
 
-	local info = display.newText(sceneGroup, "Developed by Carole Schroeder", 1, 1, native.systemFont, 35)
+	local info = display.newText(sceneGroup, "Handwriting Helper was created for children\nto practice their handwriting skills. \n\nPlease choose the type of handwriting and practice!  \n\n\nDeveloped by Carole Schroeder", 1, 1, "comic.ttf", 20)
 	info.x = display.contentCenterX
-	info.y = display.contentCenterY
+	info.y = display.contentHeight*.6
 	info:setFillColor(0,0,0)
 	
     

@@ -47,7 +47,7 @@ function scene:create( event )
 	buttonLC.x = display.contentWidth*.065
 	buttonLC.y = display.contentHeight*.765
 
-	local printLowerCaseButton = display.newText(sceneGroup, "a", 1, 1, native.systemFont, 50)
+	local printLowerCaseButton = display.newText(sceneGroup, "a", 1, 1, "comic.ttf", 50)
 	printLowerCaseButton.x = display.contentWidth*.065
 	printLowerCaseButton.y = display.contentHeight*.765
 	printLowerCaseButton:setFillColor(r,g,b)
@@ -56,7 +56,7 @@ function scene:create( event )
 	buttonUC.x = display.contentWidth*.22
 	buttonUC.y = display.contentHeight*.765
 
-	local printUpperCaseButton = display.newText(sceneGroup, "A", 1, 1, native.systemFont, 50)
+	local printUpperCaseButton = display.newText(sceneGroup, "A", 1, 1, "comic.ttf", 50)
 	printUpperCaseButton.x = display.contentWidth*.22
 	printUpperCaseButton.y = display.contentHeight *.765
 	printUpperCaseButton:setFillColor(r,g,b)
@@ -83,18 +83,18 @@ function scene:create( event )
 	buttonABT.x = display.contentWidth* .90
 	buttonABT.y = display.contentHeight * .12
 
-	local aboutButton = display.newText(sceneGroup, "ABOUT", 1, 1, native.systemFont, 25 )
+	local aboutButton = display.newText(sceneGroup, "ABOUT", 1, 1, "comic.ttf", 25 )
 	aboutButton.x = display.contentWidth * .90
 	aboutButton.y = display.contentHeight * .12
 	aboutButton:setFillColor(r,g,b)
 	
 
-	local menu = display.newText(sceneGroup, "MENU", 1, 1, native.systemFont, 50)
+	local menu = display.newText(sceneGroup, "MENU", 1, 1, "comic.ttf", 50)
 	menu.x = display.contentWidth * .15
 	menu.y = display.contentHeight * .12
 	menu:setFillColor(r,g,b)
 
-	local printText = display.newText(sceneGroup, "Print", 1, 1, native.systemFont, 50 )
+	local printText = display.newText(sceneGroup, "Print", 1, 1, "comic.ttf", 50 )
 	printText.x = display.contentWidth * .1425
 	printText.y = display.contentHeight * .55
 	printText:setFillColor(r,g,b)

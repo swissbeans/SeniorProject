@@ -10,14 +10,12 @@ local scene = composer.newScene()
 
 display.setStatusBar(display.HiddenStatusBar)
 local drawingGroup = display.newGroup()  -- Display group for the all the drawing stuff
-local boundaryXmin
-local boundaryYmin
-local boundaryXmax
-local boundaryYmax
 
 local function gotoMenu()
+	display.remove(drawingGroup)
+	drawingGroup = display.newGroup()
 	composer.removeScene( "menu" )
-    composer.gotoScene( "menu", { time=800, effect="crossFade" } )
+    composer.gotoScene( "menu", { time=2000, effect="crossFade" } )
 end
 
 
@@ -33,37 +31,63 @@ local function drawPoint(x1,y1)
 end
 
 
+--local function checkAccuracy()
+	--if array 1 == array 2 then
+
+--	local percentage = display.newText(drawingGroup, "Correct!", 1, 1, "comic.ttf", 35 )
+--	percentage.x = display.contentWidth*.20
+--	percentage.y = display.contentHeight* .5
+--end
+
 local function onObjectTouch( event )
 	--print(event.phase)
 	if ( event.phase == "began" ) then
 		local startX=event.x
 		local startY=event.y
+		drawPoint(startX, startY)
 		print(startX, startY)
+		--writing " " to file array.txt
+		local path = system.pathForFile("array.txt", system.DocumentsDirectory)
+		local file, errorString = io.open(path, "w")
+		if not file then
+			print("file error!!!!: " .. errorString)
+		else
+		file:write(" ")
+		end
+		io.close(file)
 	end
 
 	if (event.phase == "moved") then
 		--for 
 		local innerX = event.x
 		local innerY = event.y
-		print(innerX, innerY)
 		drawPoint(innerX, innerY)
+		print(innerX, innerY)
+		local path = system.pathForFile("array.txt", system.DocumentsDirectory)
+		local file, errorString = io.open(path, "a")
+		if not file then
+			print("file error: " .. errorString)
+		else			
+			file:write(innerX, " ", innerY, " ")
+			io.close(file)
+		end
 	end
 
 	if ( event.phase == "ended" ) then
 		local endX=event.x
 		local endY=event.y
-		print(endX, endY)
-		drawPoint(endX,endY)
+		display.save(drawingGroup, "currentLetter.png")
+    	local path = system.pathForFile(nil, system.DocumentsDirectory)
     end
 end
 
 
 local lettersGroup = display.newGroup()
-
+local numFrames = 27
     local options = {
         width = 132,
         height = 150,
-        numFrames = 27,
+        numFrames = numFrames,
         sheetContentWidth = 396,
         sheetContentHeight = 1350
     }
@@ -106,12 +130,44 @@ local imageSheet = graphics.newImageSheet("pngs/LowerCaseLetters.Png", options)
 
 
   local letters = display.newSprite(lettersGroup, imageSheet, sequenceData)
-  	letters.x = display.contentCenterX*3/2
-  	letters.y = display.contentCenterY+33
+  	letters.x = display.contentWidth *.7
+  	letters.y = display.contentHeight *.525
+  	letters:scale(1.8, 1.8)
  	letters:setSequence("a")
  	letters:play()
 
+local letterCount = 1
 
+local function gotoNextLetter()
+	--checkAccuracy()
+	letterCount = letterCount + 1
+	if (letterCount > numFrames) then
+		letterCount=1
+		--letters:setSequence(letterFrames[letterCount])
+	end	
+
+	letters:setSequence(letterFrames[letterCount])
+	display.remove(drawingGroup)
+	drawingGroup = display.newGroup()
+	--letterCount = letterCount +1
+	print("Letter is at "..letterCount)
+end
+
+local function gotoPreviousLetter()
+	letterCount = letterCount-1
+	if (letterCount < 1) then
+		--display.remove(drawingGroup)
+		letterCount = numFrames
+		--letters:setSequence(letterFrames[letterCount])
+		--display.remove(drawingGroup)
+		--drawingGroup = display.newGroup()
+	end	
+
+	letters:setSequence(letterFrames[letterCount])
+	display.remove(drawingGroup)
+	drawingGroup = display.newGroup()
+	print("Letter is at "..letterCount)
+end
 
 -- create()
 local buttonMenu
@@ -119,26 +175,57 @@ function scene:create( event )
 	local sceneGroup = self.view
 	local background = display.newImageRect(sceneGroup, "pngs/background.Png", 1200, 1200)
 
-	buttonMenu = display.newImageRect(sceneGroup, "pngs/rectButton.Png", 160, 60)
-		buttonMenu.x = display.contentWidth* .15
+buttonMenu = display.newImageRect(sceneGroup, "pngs/rectButton.Png", 160, 60)
+		buttonMenu.x = display.contentWidth* .10
 		buttonMenu.y = display.contentHeight* .12
-		buttonMenu:addEventListener("tap", gotoMenu)
 
-    local menuText = display.newText(sceneGroup, "MENU", 1, 1, native.systemFont, 35 )
-		menuText.x = display.contentWidth * .15
-		menuText.y = display.contentHeight* .12
-		menuText:setFillColor(0)
+    local menuText = display.newText(sceneGroup, "MENU", 1, 1, "comic.ttf", 35 )
+	menuText.x = display.contentWidth * .10
+	menuText.y = display.contentHeight* .12
+	menuText:setFillColor(0)
+
+	local buttonCheck = display.newImageRect(sceneGroup, "pngs/rectButton.Png", 160, 60)
+	buttonCheck.x = display.contentWidth*.10
+	buttonCheck.y = display.contentHeight*.88
+	--buttonCheck:addEventListener("tap", gotoNextLetter)
+
+	local checkText = display.newText(sceneGroup, "check", 1, 1, "comic.ttf", 35)
+	checkText.x = display.contentWidth*.10
+	checkText.y = display.contentHeight*.88
+	checkText:setFillColor(0)
+
+	local buttonNext = display.newImageRect(sceneGroup, "pngs/rectButton.Png", 60, 60)
+	buttonNext.x = display.contentWidth*.95
+	buttonNext.y = display.contentHeight*.88
+	buttonNext:addEventListener("tap", gotoNextLetter)
+
+	local nextText = display.newText(sceneGroup, ">", 1, 1, "comic.ttf", 35)
+	nextText.x = display.contentWidth*.95
+	nextText.y = display.contentHeight*.88
+	nextText:setFillColor(0)
+
+	local buttonBack = display.newImageRect(sceneGroup, "pngs/rectButton.Png", 60, 60)
+	buttonBack.x = display.contentWidth*.45
+	buttonBack.y = display.contentHeight*.88
+	buttonBack:addEventListener("tap", gotoPreviousLetter)
+
+	local backText = display.newText(sceneGroup, "<", 1, 1, "comic.ttf", 35)
+	backText.x = display.contentWidth*.45
+	backText.y = display.contentHeight*.88
+	backText:setFillColor(0)
+
 
 	local writingSheet = display.newImageRect(sceneGroup, "pngs/zzritingpage.Png", 297, 338)
 		writingSheet.x = display.contentWidth *.7
-		writingSheet.y = display.contentHeight* .7
+		writingSheet.y = display.contentHeight* .525
+		writingSheet:scale(.6, .8)
 		
-		boundaryXmin = 187
-		boundaryYmin = 55
-		boundaryXmax = 485
-		boundaryYmax = 266
+		boundaryXmin = 250
+		boundaryYmin = 35
+		boundaryXmax = 425
+		boundaryYmax = 300
 
-    sceneGroup:insert(drawingGroup)
+	sceneGroup:insert(drawingGroup)
 	sceneGroup:insert(lettersGroup)
 	table.insert(sceneGroup,points)
 	background:addEventListener( "touch", onObjectTouch )
@@ -155,6 +242,7 @@ function scene:show( event )
 	local phase = event.phase
 
 	if ( phase == "will" ) then
+		buttonMenu:addEventListener("tap", gotoMenu)
 		--background:addEventListener( "touch", onObjectTouch )
 		
 			-- Code here runs when the scene is still off screen (but is about to come on screen)
