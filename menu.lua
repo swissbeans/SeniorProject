@@ -7,22 +7,38 @@ local composer = require( "composer" )
 
 local scene = composer.newScene()
 
+local function writeFile()
+		local path = system.pathForFile("array.txt", system.DocumentsDirectory)
+		local file, errorString = io.open(path, "w")
+		if not file then
+			print("file error!!!!: " .. errorString)
+		else
+		file:write(" ")
+		end
+
+		io.close(file)
+end
+
 local function goToPrintLowerCase()
+	writeFile()
 	composer.removeScene("PrintLowerCase")
 	composer.gotoScene("PrintLowerCase", { time=400, effect = "fade"})
 end
 
 local function goToPrintUpperCase()
+	writeFile()
 	composer.removeScene("PrintUpperCase")
 	composer.gotoScene("PrintUpperCase", { time=400, effect = "fade"})
 end
 
 local function goToCursiveLowerCase()
+	writeFile()
 	composer.removeScene("CursiveLowerCase")
 	composer.gotoScene("CursiveLowerCase", { time=400, effect = "fade"})
 end
 
 local function goToCursiveUpperCase()
+	writeFile()
 	composer.removeScene("CursiveUpperCase")
 	composer.gotoScene("CursiveUpperCase", { time=400, effect = "fade"})
 end

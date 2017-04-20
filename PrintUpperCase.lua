@@ -36,10 +36,6 @@ local function checkAccuracy()
 end
 
 local function onObjectTouch( event )
-	if ( event.phase == "began" ) then
-		local startX=event.x
-		local startY=event.y
-
 		local path = system.pathForFile("array.txt", system.DocumentsDirectory)
 		local file, errorString = io.open(path, "w")
 		if not file then
@@ -48,6 +44,10 @@ local function onObjectTouch( event )
 		file:write(" ")
 		end
 		io.close(file)
+
+	if ( event.phase == "began" ) then
+		local startX=event.x
+		local startY=event.y
 		drawPoint(startX, startY)
 			
 	end

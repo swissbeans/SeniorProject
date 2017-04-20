@@ -15,9 +15,23 @@ local scene = composer.newScene()
 --Global initial variables
 
 display.setStatusBar(display.HiddenStatusBar)
-local drawingGroup = display.newGroup();
+local drawingGroup = display.newGroup()
+
+local function writeFile()
+		local path = system.pathForFile("array.txt", system.DocumentsDirectory)
+		local file, errorString = io.open(path, "w")
+		if not file then
+			print("file error!!!!: " .. errorString)
+		else
+		file:write(" ")
+		end
+
+		io.close(file)
+end
+
 
 local function gotoMenu()
+	writeFile()
 	display.remove(drawingGroup)
 	drawingGroup = display.newGroup()
 	composer.removeScene( "menu" )
@@ -28,15 +42,14 @@ local points = {}
 
 local function drawPoint(x1,y1)
 	if(x1 > boundaryXmin and y1 > boundaryYmin and x1 < boundaryXmax and y1 < boundaryYmax) then
-		local point = display.newRoundedRect(drawingGroup, x1, y1, 10, 10, 5)
+		local point = display.newRoundedRect(drawingGroup, x1, y1, 1, 1, 5)
 		point:setFillColor(0,0,0)   
 		table.insert(points, point)
 	end
 end
 
---local function checkAccuracy()
-	--if array 1 == array 2 then
-
+--local function gotoCheckAccuracy()
+	--writeFile()
 --	local percentage = display.newText(drawingGroup, "Correct!", 1, 1, "comic.ttf", 35 )
 --	percentage.x = display.contentWidth*.20
 --	percentage.y = display.contentHeight* .5
@@ -44,28 +57,32 @@ end
 
 --local path = system.pathForFile("array.txt", system.DocumentsDirectory)
 local function onObjectTouch( event )
+	local function appendFile()
+		
+	end
 	if ( event.phase == "began" ) then
 		local startX=event.x
 		local startY=event.y
 		drawPoint(startX, startY)
 		print(startX, startY)
-		--writing " " to file array.txt
+		--append to file array.txt
 		local path = system.pathForFile("array.txt", system.DocumentsDirectory)
-		local file, errorString = io.open(path, "w")
+		local file, errorString = io.open(path, "a")
 		if not file then
-			print("file error!!!!: " .. errorString)
-		else
-		file:write(" ")
+			print("file error: " .. errorString)
+		else			
+			file:write(startX, " ", startY, " ")
+			io.close(file)
 		end
-		io.close(file)
-	
 	end
 
+	
 	if (event.phase == "moved") then 
 		local innerX = event.x
 		local innerY = event.y
 		drawPoint(innerX, innerY)	
 		print(innerX, innerY)
+		--append to file array.txt
 		local path = system.pathForFile("array.txt", system.DocumentsDirectory)
 		local file, errorString = io.open(path, "a")
 		if not file then
@@ -76,14 +93,22 @@ local function onObjectTouch( event )
 		end
 	end
 
+	
+
 	if ( event.phase == "ended" ) then
 		local endX=event.x
 		local endY=event.y
 		display.save(drawingGroup, "currentLetter.png")
     	local path = system.pathForFile(nil, system.DocumentsDirectory)
-    	--print (path)
-		--print(endX, endY)
-		--drawPoint(endX,endY)
+    	--append to file array.txt
+		local path = system.pathForFile("array.txt", system.DocumentsDirectory)
+		local file, errorString = io.open(path, "a")
+		if not file then
+			print("file error: " .. errorString)
+		else			
+			file:write(endX, " ", endY, " ")
+			io.close(file)
+		end
     end
 end
 
@@ -122,8 +147,11 @@ local letterCount = 1
 
 
 
+
+
 local function gotoNextLetter()
 	--checkAccuracy()
+	writeFile()
 	letterCount = letterCount + 1
 	if (letterCount > numFrames) then
 		letterCount=1
@@ -138,6 +166,7 @@ local function gotoNextLetter()
 end
 
 local function gotoPreviousLetter()
+	writeFile()
 	letterCount = letterCount-1
 	if (letterCount < 1) then
 		--display.remove(drawingGroup)
@@ -172,7 +201,7 @@ function scene:create( event )
 	local buttonCheck = display.newImageRect(sceneGroup, "pngs/rectButton.Png", 160, 60)
 	buttonCheck.x = display.contentWidth*.10
 	buttonCheck.y = display.contentHeight*.88
-	--buttonCheck:addEventListener("tap", gotoNextLetter)
+	--buttonCheck:addEventListener("tap", gotoCheckText)
 
 	local checkText = display.newText(sceneGroup, "check", 1, 1, "comic.ttf", 35)
 	checkText.x = display.contentWidth*.10
