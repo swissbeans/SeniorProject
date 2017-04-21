@@ -48,23 +48,113 @@ local function drawPoint(x1,y1)
 	end
 end
 
---local function gotoCheckAccuracy()
+local function gotoCheckAccuracy()
+	local theirTable = {}
+	local myTable = {}
+
+	-- thank you Rob Miracle for the split function 
+	-- https://coronalabs.com/blog/2013/04/16/lua-string-magic/
+	function string:split( inSplitPattern, outResults )
+		if not outResults then
+      		outResults = {}
+   		end
+   		local theStart = 1
+    	local theSplitStart, theSplitEnd = string.find( self, inSplitPattern, theStart )
+    	while theSplitStart do
+      		table.insert( outResults, string.sub( self, theStart, theSplitStart-1 ) )
+      		theStart = theSplitEnd + 1
+      		theSplitStart, theSplitEnd = string.find( self, inSplitPattern, theStart )
+    	end
+    	table.insert( outResults, string.sub( self, theStart ) )
+    	return outResults
+	end
+
+
+	local path = system.pathForFile("myArray.txt", system.DocumentsDirectory)
+	local file, errorString = io.open(path, "r")
+   	if not file then 
+			print("File error: ".. errorString)
+		else
+   		local contents = file:read("*a")
+		--print("Contents of "..path .."\n" .. contents)
+
+
+
+		
+		myTable = string.split( contents, " " )
+		--print("This is a number plus 10: ".. myTable[4]+ 10)
+		--print("This is a number minus 10: ".. myTable[4]- 10)
+
+		for i = 1, #myTable do
+ 		  	print((myTable[i] ))
+ 		  --	print(myTable[i])
+ 		end --loop
+
+		
+		print (myTable[4], "yikes!")
+
+		io.close(file)
+	end --  if statement
+	--file = nil
+
+	local path1 = system.pathForFile("theirArray.txt", system.DocumentsDirectory)
+	local file1, errorString1 = io.open(path1, "r")
+   	if not file1 then 
+			print("File error: ".. errorString1)
+		else
+   		local contents1 = file1:read("*a")
+		--print("Contents of "..path .."\n" .. contents)
+
+
+
+		theirTable = string.split(contents1, " ")
+		--myTable = string.split( contents, " " )
+		--print("This is a number plus 10: ".. myTable[4]+ 10)
+		--print("This is a number minus 10: ".. myTable[4]- 10)
+
+		for i = 1, #myTable do
+ 		  	print((theirTable[i] ))
+ 		  --	print(myTable[i])
+ 		end --loop
+
+		
+		print (theirTable[2], "yikes!")
+
+		io.close(file1)
+	end --  if statement
+
+	for i = 1, #myTable do
+		--for j = 1, #theirTable do
+		--if(myTable[i]+15 <=  theirTable[i] or myTable[i]-15 >= theirTable[i]) then
+			if(myTable[i]==theirTable[i]) then
+				print("true") else
+				print("false")
+			end
+		--end
+	end
+ 
+
+
+	
+
+	--for i = 1, #contents do 
+	--	print(contents[i])
+	--end
+
 	--writeFile()
+
 --	local percentage = display.newText(drawingGroup, "Correct!", 1, 1, "comic.ttf", 35 )
 --	percentage.x = display.contentWidth*.20
 --	percentage.y = display.contentHeight* .5
---end
 
---local path = system.pathForFile("array.txt", system.DocumentsDirectory)
+end-- gotoCheckAccuracy function
+
 local function onObjectTouch( event )
-	local function appendFile()
-		
-	end
 	if ( event.phase == "began" ) then
 		local startX=event.x
 		local startY=event.y
 		drawPoint(startX, startY)
-		print(startX, startY)
+		--print(startX, startY)
 		--append to file array.txt
 		local path = system.pathForFile("array.txt", system.DocumentsDirectory)
 		local file, errorString = io.open(path, "a")
@@ -81,7 +171,7 @@ local function onObjectTouch( event )
 		local innerX = event.x
 		local innerY = event.y
 		drawPoint(innerX, innerY)	
-		print(innerX, innerY)
+		--print(innerX, innerY)
 		--append to file array.txt
 		local path = system.pathForFile("array.txt", system.DocumentsDirectory)
 		local file, errorString = io.open(path, "a")
@@ -201,7 +291,7 @@ function scene:create( event )
 	local buttonCheck = display.newImageRect(sceneGroup, "pngs/rectButton.Png", 160, 60)
 	buttonCheck.x = display.contentWidth*.10
 	buttonCheck.y = display.contentHeight*.88
-	--buttonCheck:addEventListener("tap", gotoCheckText)
+	buttonCheck:addEventListener("tap", gotoCheckAccuracy)
 
 	local checkText = display.newText(sceneGroup, "check", 1, 1, "comic.ttf", 35)
 	checkText.x = display.contentWidth*.10
