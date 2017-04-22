@@ -48,13 +48,9 @@ local function drawPoint(x1,y1)
 	end
 end
 
-local function gotoCheckAccuracy()
-	local theirTable = {}
-	local myTable = {}
-
 	-- thank you Rob Miracle for the split function 
 	-- https://coronalabs.com/blog/2013/04/16/lua-string-magic/
-	function string:split( inSplitPattern, outResults )
+function string:split( inSplitPattern, outResults )
 		if not outResults then
       		outResults = {}
    		end
@@ -67,8 +63,28 @@ local function gotoCheckAccuracy()
     	end
     	table.insert( outResults, string.sub( self, theStart ) )
     	return outResults
-	end
+end
 
+local function distance(x1, y1, x2, y2)
+		dx = (x1-x2)
+		dy = (y1-y2)
+		return math.sqrt(dx*dx)+(dy*dy)
+end
+
+
+
+local function gotoCheckAccuracy()
+	local theirTable = {}
+	local myTable = {}
+	
+	--initialize 2d table with 0's
+	twoDTable = {}
+	for x=1, 175 do
+		twoDTable[x] = {}
+		for y=1, 265 do 
+			twoDTable[x][y] = 0
+		end
+	end
 
 	local path = system.pathForFile("myArray.txt", system.DocumentsDirectory)
 	local file, errorString = io.open(path, "r")
@@ -76,22 +92,43 @@ local function gotoCheckAccuracy()
 			print("File error: ".. errorString)
 		else
    		local contents = file:read("*a")
-		--print("Contents of "..path .."\n" .. contents)
+	
+		print("Contents of "..path .."\n" .. contents)
+		myTable = string.split( (contents), " " )
+		--[[
+		print_r(myTable)
+
+		myTable_diff = {}
+		myTable_subtraction = 175
+		for i in ipairs(myTable) do
+			myTable_diff[i] = (myTable[i]-myTable_subtraction)
+		end
+		print(myTable_diff)
+			 
+]]
+
+
+		print ((tonumber(myTable[4])), "yikes!")
+ 		
+
+ 		for x=2, #myTable, 2 do
+ 			for y=3, #myTable, 2 do
+ 				
+ 				--print_r(myTable)
+ 				--print(twoDTable[x][y])
+ 				if (myTable[x] ~= nil or myTable[y] ~= nil or twoDTable[x][y] ~= nil) then 
+ 					twoDTable[tonumber(myTable[x])][tonumber(myTable[y])] = 1
+ 					else
+ 					break
+
+ 				end
+
+ 			end 
+ 		end
 
 
 
-		
-		myTable = string.split( contents, " " )
-		--print("This is a number plus 10: ".. myTable[4]+ 10)
-		--print("This is a number minus 10: ".. myTable[4]- 10)
 
-		for i = 1, #myTable do
- 		  	print((myTable[i] ))
- 		  --	print(myTable[i])
- 		end --loop
-
-		
-		print (myTable[4], "yikes!")
 
 		io.close(file)
 	end --  if statement
@@ -103,36 +140,91 @@ local function gotoCheckAccuracy()
 			print("File error: ".. errorString1)
 		else
    		local contents1 = file1:read("*a")
-		--print("Contents of "..path .."\n" .. contents)
-
-
-
+	
 		theirTable = string.split(contents1, " ")
-		--myTable = string.split( contents, " " )
-		--print("This is a number plus 10: ".. myTable[4]+ 10)
-		--print("This is a number minus 10: ".. myTable[4]- 10)
-
-		for i = 1, #myTable do
- 		  	print((theirTable[i] ))
- 		  --	print(myTable[i])
- 		end --loop
-
-		
+		print_r((theirTable))
 		print (theirTable[2], "yikes!")
 
 		io.close(file1)
 	end --  if statement
 
+
+
+		local myTable1 = tonumber(myTable[3])
+		local myTable2 = tonumber(theirTable[4])
+		
+		print (math.abs(myTable2-myTable1))
+		print(4-4)
+
+
+
+		
+
+		
+
+
+		--print (math.abs(tonumber(myTable[1])) - tonumber(theirTable[1]))
+	
+	--[[
+
 	for i = 1, #myTable do
 		--for j = 1, #theirTable do
-		--if(myTable[i]+15 <=  theirTable[i] or myTable[i]-15 >= theirTable[i]) then
-			if(myTable[i]==theirTable[i]) then
+		table1 = tonumber(myTable[i])
+		table2 = tonumber(theirTable[i])
+		print ((math.abs(table1-table2)))
+	end
+		
+
+		if ((math.abs(table1-table2)) <= 15)  then
+		--print (math.abs(tonumber(myTable[3])))
+			--if(myTable[i]==theirTable[i]) then
 				print("true") else
 				print("false")
-			end
-		--end
-	end
+		end
+	
+]]
+	--end
+	--end
+
+
+	
+	--readFile("myArray.txt")
+	
+
  
+
+		
+	
+
+		
+	
+
+
+
+
+	
+		--print("This is a number plus 10: ".. myTable[4]+ 10)
+		--print("This is a number minus 10: ".. myTable[4]- 10)
+
+	
+
+		
+	
+		--myTable = string.split( contents, " " )
+		--print("This is a number plus 10: ".. myTable[4]+ 10)
+		--print("This is a number minus 10: ".. myTable[4]- 10)
+--[[
+
+		for i = 1, #myTable do
+ 		  	print((theirTable[i] ))
+ 		  --	print(myTable[i])
+ 		end --loop
+]]
+
+		
+		
+
+	
 
 
 	
@@ -149,6 +241,46 @@ local function gotoCheckAccuracy()
 
 end-- gotoCheckAccuracy function
 
+function print_r ( t )  
+    local print_r_cache={}
+    local function sub_print_r(t,indent)
+        if (print_r_cache[tostring(t)]) then
+            print(indent.."*"..tostring(t))
+        else
+            print_r_cache[tostring(t)]=true
+            if (type(t)=="table") then
+                for pos,val in pairs(t) do
+                    if (type(val)=="table") then
+                        print(indent.."["..pos.."] => "..tostring(t).." {")
+                        sub_print_r(val,indent..string.rep(" ",string.len(pos)+8))
+                        print(indent..string.rep(" ",string.len(pos)+6).."}")
+                    elseif (type(val)=="string") then
+                        print(indent.."["..pos..'] => "'..val..'"')
+                    else
+                        print(indent.."["..pos.."] => "..tostring(val))
+                    end
+                end
+            else
+                print(indent..tostring(t))
+            end
+        end
+    end
+    if (type(t)=="table") then
+        print(tostring(t).." {")
+        sub_print_r(t,"  ")
+        print("}")
+    else
+        sub_print_r(t,"  ")
+    end
+    print()
+end
+
+local function twoDArray()
+
+end
+
+
+
 local function onObjectTouch( event )
 	if ( event.phase == "began" ) then
 		local startX=event.x
@@ -160,30 +292,34 @@ local function onObjectTouch( event )
 		local file, errorString = io.open(path, "a")
 		if not file then
 			print("file error: " .. errorString)
-		else			
+		else	
+		if(startX > boundaryXmin and startY > boundaryYmin and startX < boundaryXmax and startY < boundaryYmax) then		
 			file:write(startX, " ", startY, " ")
+		end
 			io.close(file)
 		end
 	end
 
-	
-	if (event.phase == "moved") then 
+		if (event.phase == "moved") then 
+		
 		local innerX = event.x
 		local innerY = event.y
 		drawPoint(innerX, innerY)	
+	
+
 		--print(innerX, innerY)
 		--append to file array.txt
 		local path = system.pathForFile("array.txt", system.DocumentsDirectory)
 		local file, errorString = io.open(path, "a")
 		if not file then
 			print("file error: " .. errorString)
-		else			
+		else	
+		if(innerX > boundaryXmin and innerY > boundaryYmin and innerX < boundaryXmax and innerY < boundaryYmax) then		
 			file:write(innerX, " ", innerY, " ")
+		end
 			io.close(file)
 		end
 	end
-
-	
 
 	if ( event.phase == "ended" ) then
 		local endX=event.x
@@ -195,8 +331,10 @@ local function onObjectTouch( event )
 		local file, errorString = io.open(path, "a")
 		if not file then
 			print("file error: " .. errorString)
-		else			
+		else		
+		if(endX > boundaryXmin and endY > boundaryYmin and endX < boundaryXmax and endY < boundaryYmax) then	
 			file:write(endX, " ", endY, " ")
+		end
 			io.close(file)
 		end
     end
@@ -345,6 +483,8 @@ function scene:show( event )
 
 	if ( phase == "will" ) then
 		buttonMenu:addEventListener("tap", gotoMenu)
+		--buttonMenu:addEventListener("tap", twoDArray)
+
 			-- Code here runs when the scene is still off screen (but is about to come on screen)
 	elseif ( phase == "did" ) then
 		-- Code here runs when the scene is entirely on screen
