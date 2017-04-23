@@ -9,6 +9,8 @@
 ]]
 
 local composer = require( "composer" )
+local json = require("json")
+local loadsave = require("loadsave")
 
 local scene = composer.newScene()
 
@@ -16,6 +18,47 @@ local scene = composer.newScene()
 
 display.setStatusBar(display.HiddenStatusBar)
 local drawingGroup = display.newGroup()
+
+boundaryXmin = 250
+boundaryYmin = 35
+boundaryXmax = 425
+boundaryYmax = 300
+
+
+function print_r ( t )  
+    local print_r_cache={}
+    local function sub_print_r(t,indent)
+        if (print_r_cache[tostring(t)]) then
+            print(indent.."*"..tostring(t))
+        else
+            print_r_cache[tostring(t)]=true
+            if (type(t)=="table") then
+                for pos,val in pairs(t) do
+                    if (type(val)=="table") then
+                        print(indent.."["..pos.."] => "..tostring(t).." {")
+                        sub_print_r(val,indent..string.rep(" ",string.len(pos)+8))
+                        print(indent..string.rep(" ",string.len(pos)+6).."}")
+                    elseif (type(val)=="string") then
+                        print(indent.."["..pos..'] => "'..val..'"')
+                    else
+                        print(indent.."["..pos.."] => "..tostring(val))
+                    end
+                end
+            else
+                print(indent..tostring(t))
+            end
+        end
+    end
+    if (type(t)=="table") then
+        print(tostring(t).." {")
+        sub_print_r(t,"  ")
+        print("}")
+    else
+        sub_print_r(t,"  ")
+    end
+    print()
+end
+
 
 local function writeFile()
 		local path = system.pathForFile("array.txt", system.DocumentsDirectory)
@@ -71,20 +114,85 @@ local function distance(x1, y1, x2, y2)
 		return math.sqrt(dx*dx)+(dy*dy)
 end
 
+local pictureWidth = boundaryXmax - boundaryXmin
+local pictureHeight= boundaryYmax - boundaryYmin
+local boxesTall = 10
+local boxesWide = 10
+local boxWidth = pictureWidth/boxesWide
+local boxHeight = pictureHeight/boxesTall
+
+twoDTable = {}
+	for x = 1,  boxesWide do
+		twoDTable[x] = {}
+		for y= 1, boxesTall do 
+			twoDTable[x][y] = 0
+		end
+	end
+print_r(twoDTable)
+
+local function addPointToArray(x, y)
+	local xCell = math.floor((x-boundaryXmin)/boxWidth)+1
+	local yCell = math.floor((y-boundaryYmin)/boxHeight)+1
+	--print("xCell"..xCell.."yCell"..yCell)
+	if(xCell>=1 and xCell<=boxesWide and yCell >=1 and yCell <= boxesTall) then
+		twoDTable[xCell][yCell] = 1
+	end
+end
+
 
 
 local function gotoCheckAccuracy()
 	local theirTable = {}
 	local myTable = {}
-	
+
+	--print_r(twoDTable)
+	local serializeTable = json.encode(twoDTable)
+	print(serializeTable, "NOOOOOOO")
+	--loadsave.saveTable(twoDTable, "cursiveLowerJ.json")
 	--initialize 2d table with 0's
-	twoDTable = {}
-	for x=1, 175 do
-		twoDTable[x] = {}
-		for y=1, 265 do 
-			twoDTable[x][y] = 0
+
+	savedTable = loadsave.loadTable("cursiveLowerJ.json")
+	local serializeTable2 = json.encode(savedTable)
+	print(serializeTable2, "yes!!!!")
+
+	local summer = 0
+	for i=1, #twoDTable do
+		for j=1, #twoDTable do
+			if(twoDTable[i][j] == 1) then
+				summer = summer+1
+			end
 		end
 	end
+	print (summer, "u")
+	local summer2 = 0
+	for i=1, #savedTable do
+		for j=1, #savedTable do
+			if (savedTable[i][j] == 1 ) then
+				summer2 = summer2+1
+			end
+		end
+	end
+	print (summer2, "v")
+
+
+	local dotProduct = 0
+	for i=1, #twoDTable do
+		for j=1, #twoDTable do
+			if((savedTable[i][j] == 1 and twoDTable[i][j]) == 1) then
+				dotProduct = dotProduct+1
+			end
+		end
+	end
+	print(dotProduct, "u.v")
+
+	local uvLength = math.sqrt(summer)*math.sqrt(summer2)
+	print (uvLength.."|u|*|v|")
+
+
+	print(math.floor((dotProduct/uvLength)*100).." percent")
+--	if (twoDTable )	
+
+
 
 	local path = system.pathForFile("myArray.txt", system.DocumentsDirectory)
 	local file, errorString = io.open(path, "r")
@@ -93,7 +201,7 @@ local function gotoCheckAccuracy()
 		else
    		local contents = file:read("*a")
 	
-		print("Contents of "..path .."\n" .. contents)
+		--print("Contents of "..path .."\n" .. contents)
 		myTable = string.split( (contents), " " )
 		--[[
 		print_r(myTable)
@@ -108,9 +216,8 @@ local function gotoCheckAccuracy()
 ]]
 
 
-		print ((tonumber(myTable[4])), "yikes!")
- 		
-
+--		print ((tonumber(myTable[4])), "yikes!")
+ 		--[[
  		for x=2, #myTable, 2 do
  			for y=3, #myTable, 2 do
  				
@@ -127,6 +234,7 @@ local function gotoCheckAccuracy()
  		end
 
 
+]]
 
 
 
@@ -142,8 +250,8 @@ local function gotoCheckAccuracy()
    		local contents1 = file1:read("*a")
 	
 		theirTable = string.split(contents1, " ")
-		print_r((theirTable))
-		print (theirTable[2], "yikes!")
+		--print_r((theirTable))
+		--print (theirTable[2], "yikes!")
 
 		io.close(file1)
 	end --  if statement
@@ -153,8 +261,8 @@ local function gotoCheckAccuracy()
 		local myTable1 = tonumber(myTable[3])
 		local myTable2 = tonumber(theirTable[4])
 		
-		print (math.abs(myTable2-myTable1))
-		print(4-4)
+		--print (math.abs(myTable2-myTable1))
+		--print(4-4)
 
 
 
@@ -241,39 +349,7 @@ local function gotoCheckAccuracy()
 
 end-- gotoCheckAccuracy function
 
-function print_r ( t )  
-    local print_r_cache={}
-    local function sub_print_r(t,indent)
-        if (print_r_cache[tostring(t)]) then
-            print(indent.."*"..tostring(t))
-        else
-            print_r_cache[tostring(t)]=true
-            if (type(t)=="table") then
-                for pos,val in pairs(t) do
-                    if (type(val)=="table") then
-                        print(indent.."["..pos.."] => "..tostring(t).." {")
-                        sub_print_r(val,indent..string.rep(" ",string.len(pos)+8))
-                        print(indent..string.rep(" ",string.len(pos)+6).."}")
-                    elseif (type(val)=="string") then
-                        print(indent.."["..pos..'] => "'..val..'"')
-                    else
-                        print(indent.."["..pos.."] => "..tostring(val))
-                    end
-                end
-            else
-                print(indent..tostring(t))
-            end
-        end
-    end
-    if (type(t)=="table") then
-        print(tostring(t).." {")
-        sub_print_r(t,"  ")
-        print("}")
-    else
-        sub_print_r(t,"  ")
-    end
-    print()
-end
+
 
 local function twoDArray()
 
@@ -301,10 +377,12 @@ local function onObjectTouch( event )
 	end
 
 		if (event.phase == "moved") then 
-		
 		local innerX = event.x
 		local innerY = event.y
-		drawPoint(innerX, innerY)	
+		drawPoint(innerX, innerY)
+		if(innerX~=nil and innerY~=nil) then
+			addPointToArray(innerX, innerY)
+		end
 	
 
 		--print(innerX, innerY)
@@ -462,10 +540,7 @@ function scene:create( event )
 		writingSheet.y = display.contentHeight* .525
 		writingSheet:scale(.6, .8)
 		
-		boundaryXmin = 250
-		boundaryYmin = 35
-		boundaryXmax = 425
-		boundaryYmax = 300
+		
 
 	sceneGroup:insert(drawingGroup)
 	sceneGroup:insert(lettersGroup)
