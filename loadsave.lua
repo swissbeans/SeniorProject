@@ -18,7 +18,7 @@ function M.saveTable(t, filename, location)
     if location and (not _validLocations[location]) then
      error("Attempted to save a table to an invalid location", 2)
     elseif not location then
-      location = _defaultLocation
+      location = system.ResourceDirectory
     end
     
     local path = system.pathForFile( filename, location)
@@ -37,7 +37,7 @@ function M.loadTable(filename, location)
     if location and (not _validLocations[location]) then
      error("Attempted to load a table from an invalid location", 2)
     elseif not location then
-      location = "/"
+      location = system.ResourceDirectory
     end
     local path = system.pathForFile( filename, location)
     local contents = ""
