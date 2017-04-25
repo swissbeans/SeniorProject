@@ -81,7 +81,7 @@ function scene:create( event )
 	buttonCLC.x = display.contentWidth * .69
 	buttonCLC.y = display.contentHeight*.765
 
-	local cursiveLowerCaseButton = display.newImageRect(sceneGroup, "pngs/aa.Png", 66, 66)
+	local cursiveLowerCaseButton = display.newImageRect(sceneGroup, "pngs/LettersPngs/CLA.png", 66, 66)
 	cursiveLowerCaseButton.x = display.contentWidth*.695
 	cursiveLowerCaseButton.y = display.contentHeight * .8
 	cursiveLowerCaseButton:setFillColor(r,g,b)
@@ -90,7 +90,7 @@ function scene:create( event )
 	buttonCUC.x = display.contentWidth*.845
 	buttonCUC.y = display.contentHeight*.765
 
-	local cursiveUpperCaseButton = display.newImageRect(sceneGroup, "pngs/A.Png", 66, 66)
+	local cursiveUpperCaseButton = display.newImageRect(sceneGroup, "pngs/LettersPngs/CUA.png", 66, 66)
 	cursiveUpperCaseButton.x = display.contentWidth * .845
 	cursiveUpperCaseButton.y = display.contentHeight* .8
 	cursiveUpperCaseButton:setFillColor(r,g,b)
