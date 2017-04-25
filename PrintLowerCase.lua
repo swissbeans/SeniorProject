@@ -176,7 +176,7 @@ local function gotoCheckAccuracy()
 	
 		local serializeTable = json.encode(twoDTable)
 		print(serializeTable, "drawing table")
-	--loadsave.saveTable(twoDTable, "cursiveUpper"..letterArray[letterCount]..".json")
+	--loadsave.saveTable(twoDTable, "printLower"..letterArray[letterCount]..".json")
 	--initialize 2d table with 0's
 
 
@@ -300,7 +300,7 @@ local function onObjectTouch( event )
 		display.save(drawingGroup, "currentLetter.png")
     			
 		if(endX > boundaryXmin and endY > boundaryYmin and endX < boundaryXmax and endY < boundaryYmax) then	
-			savedTable = loadsave.loadTable("cursiveUpper"..letterArray[letterCount]..".json")
+			savedTable = loadsave.loadTable("printLower"..letterArray[letterCount]..".json")
 			local serializeTable2 = json.encode(savedTable)
 		end
 			

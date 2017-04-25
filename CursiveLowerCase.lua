@@ -1,6 +1,6 @@
 --[[Carole Schroeder
 	Senior Project
-	Handwriting Helper - Cursive Upper Case Scene
+	Handwriting Helper - Cursive Lower Case Scene
 ]]
 -- required modules
 local composer = require( "composer" )
