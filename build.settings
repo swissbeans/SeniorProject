@@ -67,4 +67,22 @@ settings =
 			"android.permission.WRITE_EXTERNAL_STORAGE"
 		},
 	},
+
+	--
+	--Windows Section
+	--
+	win32 = 
+	{
+		window = {
+			defaultMode = "fullscreen",
+			--resizable = true,
+			titleText = {
+				default = "Handwriting Helper"
+			},
+
+
+
+		},
+	
+	},
 }

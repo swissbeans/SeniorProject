@@ -9,17 +9,8 @@ local scene = composer.newScene()
 
 local function gotoMenu()
 	composer.removeScene('menu')
-	composer.gotoScene('menu', { time=3000, effect="slideUp" })
+	composer.gotoScene('menu', { time=5000, effect="slideUp" })
 end
-
-local r=.2
-local g
-local b
-function cycleColor()
-	r = (r + math.random())%.5
-	g = (r + math.random())%.6
-	b = (r + math.random())%.7
-end--cycleColor()
 
 -- create()
 function scene:create( event )

@@ -7,45 +7,29 @@ local composer = require( "composer" )
 
 local scene = composer.newScene()
 
-local function writeFile()
-		local path = system.pathForFile("array.txt", system.DocumentsDirectory)
-		local file, errorString = io.open(path, "w")
-		if not file then
-			print("file error!!!!: " .. errorString)
-		else
-		file:write(" ")
-		end
-
-		io.close(file)
-end
-
 local function goToPrintLowerCase()
-	writeFile()
 	composer.removeScene("PrintLowerCase")
-	composer.gotoScene("PrintLowerCase", { time=400, effect = "fade"})
+	composer.gotoScene("PrintLowerCase", { time=1000, effect = "fade"})
 end
 
 local function goToPrintUpperCase()
-	writeFile()
 	composer.removeScene("PrintUpperCase")
-	composer.gotoScene("PrintUpperCase", { time=400, effect = "fade"})
+	composer.gotoScene("PrintUpperCase", { time=1000, effect = "fade"})
 end
 
 local function goToCursiveLowerCase()
-	writeFile()
 	composer.removeScene("CursiveLowerCase")
-	composer.gotoScene("CursiveLowerCase", { time=400, effect = "fade"})
+	composer.gotoScene("CursiveLowerCase", { time=1000, effect = "fade"})
 end
 
 local function goToCursiveUpperCase()
-	writeFile()
 	composer.removeScene("CursiveUpperCase")
-	composer.gotoScene("CursiveUpperCase", { time=400, effect = "fade"})
+	composer.gotoScene("CursiveUpperCase", { time=1000, effect = "fade"})
 end
 
 local function gotoAbout()
 	composer.removeScene("about")
-	composer.gotoScene("about", {time = 400, effect="fade"})
+	composer.gotoScene("about", {time = 1000, effect="fade"})
 end
 
 -- create()
