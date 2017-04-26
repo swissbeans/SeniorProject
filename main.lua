@@ -3,7 +3,7 @@
 	Handwriting Helper - Main
 ]]
 
-local composer = require( "composer" )
+composer = require( "composer" )
 
 -- Hide status bar
 display.setStatusBar( display.HiddenStatusBar )

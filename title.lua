@@ -3,7 +3,7 @@
 	Handwriting Helper - Title Scene
 ]]
 
-local composer = require( "composer" )
+
 
 local scene = composer.newScene()
 

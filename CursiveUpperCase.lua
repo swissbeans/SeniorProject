@@ -3,7 +3,7 @@
 	Handwriting Helper - Cursive Upper Case Scene
 ]]
 -- required modules
-local composer = require( "composer" )
+
 local json = require("json")
 local loadsave = require("loadsave")
 

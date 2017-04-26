@@ -39,7 +39,7 @@ function M.loadTable(filename, location)
     elseif not location then
       location = system.ResourceDirectory
     end
-    local path = system.pathForFile( filename, location)
+    local path = system.pathForFile(filename, location)
     local contents = ""
     local myTable = {}
     local file = io.open( path, "r" )
